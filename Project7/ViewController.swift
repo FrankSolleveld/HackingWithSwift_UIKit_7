@@ -7,7 +7,6 @@
 
 /*
  CHALLENGE TIME
- 1. Add a Credits button using UIBarButtonItem that shows an alert telling users where the data comes from.
  2. Let users filter the petition they see. Use a second array which will be the filtered one. The array only contains petition matching the string that the user entered. This array is then used for all the table view methods. Use a UIAlertController that gets the users input. This is a tough one, so I've included some hints on the site if you get stuck.
  3. Experiment with the HTML, fix the layout a little bit.
  */
@@ -49,6 +48,12 @@ class ViewController: UITableViewController {
         let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
+    }
+    
+    @IBAction func creditsBtnPressed(_ sender: UIBarButtonItem) {
+        let ac = UIAlertController(title: "Credits", message: "This data is collected from whitehouse.gov.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true, completion: nil)
     }
     
     // MARK: Delegate Methods

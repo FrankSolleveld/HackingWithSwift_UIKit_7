@@ -46,7 +46,13 @@
                             <outlet property="delegate" destination="foh-La-ksV" id="4Sd-PJ-3ap"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="SGf-Dm-P4U"/>
+                    <navigationItem key="navigationItem" id="SGf-Dm-P4U">
+                        <barButtonItem key="leftBarButtonItem" title="Credits" id="8gW-XG-64F">
+                            <connections>
+                                <action selector="creditsBtnPressed:" destination="foh-La-ksV" id="c1k-fp-XLu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CXS-MU-EMq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -77,6 +83,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="loZ-9b-XAa" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="sti-zV-QBT">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
