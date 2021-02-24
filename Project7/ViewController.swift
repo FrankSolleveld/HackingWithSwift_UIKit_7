@@ -10,17 +10,23 @@ import UIKit
 class ViewController: UITableViewController {
     // MARK: Customer Variables
     var petitions = [Petition]()
-    let testString = "https://www.hackingwithswift.com/samples/petitions-1.json"
-    let urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=100"
     
     // MARK: Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        var urlString: String
+        if navigationController?.tabBarItem.tag == 0 {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        } else {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
+        }
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 parse(json: data)
+                return
             }
         }
+        showError()
     }
     
     // MARK: Custom Methods
@@ -29,12 +35,13 @@ class ViewController: UITableViewController {
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
             petitions = jsonPetitions.results
             tableView.reloadData()
-        } else if let url = URL(string: testString) {
-            print("Live URL broken, using test JSON.")
-            if let data = try? Data(contentsOf: url) {
-                parse(json: data)
-            }
         }
+    }
+    
+    func showError() {
+        let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
     }
     
     // MARK: Delegate Methods
