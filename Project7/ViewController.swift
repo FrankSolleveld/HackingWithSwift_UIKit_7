@@ -13,13 +13,21 @@
 
 import UIKit
 
-class ViewController: UITableViewController {
+class ViewController: UITableViewController, UISearchResultsUpdating {
+   
     // MARK: Customer Variables
     var petitions = [Petition]()
+    var filteredPetitions = [Petition]()
     
     // MARK: Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        let search = UISearchController(searchResultsController: nil)
+        search.searchResultsUpdater = self
+        search.obscuresBackgroundDuringPresentation = false
+        search.searchBar.placeholder = "Type something here to search"
+        navigationItem.searchController = search
+        
         var urlString: String
         if navigationController?.tabBarItem.tag == 0 {
             urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
@@ -56,14 +64,37 @@ class ViewController: UITableViewController {
         present(ac, animated: true, completion: nil)
     }
     
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else { return }
+        if text.count == 0 {
+            filteredPetitions.removeAll()
+        } else if text.count > 3 {
+            for item in petitions {
+                if item.title.contains(text) || item.body.contains(text) {
+                    filteredPetitions.append(item)
+                }
+            }
+        }
+        tableView.reloadData()
+    }
+    
     // MARK: Delegate Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return petitions.count
+        if filteredPetitions.count > 0 {
+            return filteredPetitions.count
+        } else {
+            return petitions.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let petition = petitions[indexPath.row]
+        var petition: Petition
+        if filteredPetitions.count > 0 {
+            petition = filteredPetitions[indexPath.row]
+        } else {
+            petition = petitions[indexPath.row]
+        }
         cell.textLabel?.text = petition.title
         cell.detailTextLabel?.text = petition.body
         return cell
@@ -71,7 +102,11 @@ class ViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailViewController()
-        vc.detailItem = petitions[indexPath.row]
+        if filteredPetitions.count > 0 {
+            vc.detailItem = filteredPetitions[indexPath.row]
+        } else {
+            vc.detailItem = petitions[indexPath.row]
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
 }
