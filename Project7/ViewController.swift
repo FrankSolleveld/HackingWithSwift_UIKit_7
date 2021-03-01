@@ -5,12 +5,6 @@
 //  Created by Frank Solleveld on 24/02/2021.
 //
 
-/*
- CHALLENGE TIME
- 2. Let users filter the petition they see. Use a second array which will be the filtered one. The array only contains petition matching the string that the user entered. This array is then used for all the table view methods. Use a UIAlertController that gets the users input. This is a tough one, so I've included some hints on the site if you get stuck.
- 3. Experiment with the HTML, fix the layout a little bit.
- */
-
 import UIKit
 
 class ViewController: UITableViewController, UISearchResultsUpdating {
@@ -68,14 +62,17 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         guard let text = searchController.searchBar.text else { return }
         if text.count == 0 {
             filteredPetitions.removeAll()
-        } else if text.count > 3 {
+            tableView.reloadData()
+        } else if text.count > 2 {
             for item in petitions {
                 if item.title.contains(text) || item.body.contains(text) {
-                    filteredPetitions.append(item)
+                    if !filteredPetitions.contains(where: {$0.title == item.title}) {
+                        filteredPetitions.append(item)
+                    }
                 }
             }
+            tableView.reloadData()
         }
-        tableView.reloadData()
     }
     
     // MARK: Delegate Methods
