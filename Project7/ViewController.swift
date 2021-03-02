@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UITableViewController, UISearchResultsUpdating {
-   
+    
     // MARK: Customer Variables
     var petitions = [Petition]()
     var filteredPetitions = [Petition]()
@@ -21,22 +21,7 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Type something here to search"
         navigationItem.searchController = search
-        var urlString: String
-        if navigationController?.tabBarItem.tag == 0 {
-            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
-        } else {
-            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
-        }
-        DispatchQueue.global(qos: .userInitiated).async {
-            [weak self] in
-            if let url = URL(string: urlString) {
-                if let data = try? Data(contentsOf: url) {
-                    self?.parse(json: data)
-                    return
-                }
-            }
-            self?.showError()
-        }
+        performSelector(inBackground: #selector(fetchJSON), with: nil)
     }
     
     // MARK: Custom Methods
@@ -44,20 +29,33 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         let decoder = JSONDecoder()
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
             petitions = jsonPetitions.results
-            DispatchQueue.main.async {
-                [weak self] in
-                self?.tableView.reloadData()
-            }
+            tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
+        } else {
+            performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
         }
     }
     
-    func showError() {
-        DispatchQueue.main.async {
-            [weak self] in
-            let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self?.present(ac, animated: true)
+    @objc func fetchJSON(){
+        var urlString: String
+        if navigationController?.tabBarItem.tag == 0 {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        } else {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
+        if let url = URL(string: urlString) {
+            if let data = try? Data(contentsOf: url) {
+                parse(json: data)
+                return
+            }
+        }
+        performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
+    }
+    
+    
+    @objc func showError() {
+        let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
     }
     
     @IBAction func creditsBtnPressed(_ sender: UIBarButtonItem) {
@@ -104,7 +102,7 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         cell.detailTextLabel?.text = petition.body
         return cell
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailViewController()
         if filteredPetitions.count > 0 {
