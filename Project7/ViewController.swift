@@ -35,8 +35,8 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
                     return
                 }
             }
+            self?.showError()
         }
-        showError()
     }
     
     // MARK: Custom Methods
@@ -44,14 +44,20 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         let decoder = JSONDecoder()
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
             petitions = jsonPetitions.results
-            tableView.reloadData()
+            DispatchQueue.main.async {
+                [weak self] in
+                self?.tableView.reloadData()
+            }
         }
     }
     
     func showError() {
-        let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac, animated: true)
+        DispatchQueue.main.async {
+            [weak self] in
+            let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(ac, animated: true)
+        }
     }
     
     @IBAction func creditsBtnPressed(_ sender: UIBarButtonItem) {
