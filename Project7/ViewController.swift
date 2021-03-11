@@ -7,7 +7,6 @@
 
 /*
  CHALLENGE TIME
- 1. Modify project 1 so that loading the list of NSSL images from our bundle happens in the background. reloaddata on tableview once finished.
  2. Modify project 8 so loading levels is done in the background. Make sure you update your UI on the main thread!
  3. Modify your project 7 so that your filtering takes place in the background.
  */
