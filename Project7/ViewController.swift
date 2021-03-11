@@ -5,12 +5,6 @@
 //  Created by Frank Solleveld on 24/02/2021.
 //
 
-/*
- CHALLENGE TIME
- 2. Modify project 8 so loading levels is done in the background. Make sure you update your UI on the main thread!
- 3. Modify your project 7 so that your filtering takes place in the background.
- */
-
 import UIKit
 
 class ViewController: UITableViewController, UISearchResultsUpdating {
@@ -58,7 +52,6 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         }
         performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
     }
-    
     
     @objc func showError() {
         let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the feed. Check your internet connection and try again.", preferredStyle: .alert)
