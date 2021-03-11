@@ -18,6 +18,7 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
     // MARK: Customer Variables
     var petitions = [Petition]()
     var filteredPetitions = [Petition]()
+    var urlString = String()
     
     // MARK: Lifecycle Methods
     override func viewDidLoad() {
@@ -27,6 +28,11 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Type something here to search"
         navigationItem.searchController = search
+        if navigationController?.tabBarItem.tag == 0 {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        } else {
+            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
+        }
         performSelector(inBackground: #selector(fetchJSON), with: nil)
     }
     
@@ -42,12 +48,6 @@ class ViewController: UITableViewController, UISearchResultsUpdating {
     }
     
     @objc func fetchJSON(){
-        var urlString: String
-        if navigationController?.tabBarItem.tag == 0 {
-            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
-        } else {
-            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
-        }
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 parse(json: data)
